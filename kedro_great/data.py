@@ -46,7 +46,7 @@ def identify_dataset_type(
 
 
 def generate_datasource_name(dataset_name: str) -> str:
-    return f"{dataset_name}__src"
+    return f"{dataset_name}___kedro_great_datasource"
 
 
 def get_ge_class(datasource_type: DatasourceTypes) -> Optional[str]:
