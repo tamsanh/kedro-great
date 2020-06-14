@@ -11,7 +11,6 @@ from great_expectations.cli.util import cli_message
 from great_expectations.data_context.types.base import DatasourceConfigSchema
 from great_expectations import exceptions as ge_exceptions
 from kedro.context import load_context
-from kedro.extras.datasets.pandas import CSVDataSet
 from kedro.framework.context import KedroContext
 from kedro.io import AbstractDataSet
 

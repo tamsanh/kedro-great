@@ -20,6 +20,8 @@ from data import (
 
 
 class KedroGreat:
+    DEFAULT_SUITE_TYPES = ["warning", "basic", None]
+
     def __init__(
         self,
         expectations_map: Dict = None,
@@ -30,7 +32,8 @@ class KedroGreat:
         if expectations_map is None:
             expectations_map = {}
         if suite_types is None:
-            suite_types = ["warning", None]
+            suite_types = []
+        suite_types += KedroGreat.DEFAULT_SUITE_TYPES
         self.expectations_map = expectations_map
         self.suite_types = suite_types
 
