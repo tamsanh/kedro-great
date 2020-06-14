@@ -21,6 +21,7 @@ setup(
         "kedro[pandas]>=0.16.0",
         "kedro[spark]>=0.16.0",
         "great_expectations",
+        "pyspark",
     ],
     classifiers=[
         "License :: OSI Approved :: MIT License",
