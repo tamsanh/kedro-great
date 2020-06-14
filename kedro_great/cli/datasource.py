@@ -99,7 +99,7 @@ def generate_datasources(
     return new_datasources
 
 
-@click.command(name="generate_datasources")
+@click.command(name="datasources")
 @click.option(
     "--directory",
     "-d",
@@ -107,7 +107,11 @@ def generate_datasources(
     help="The project's great_expectations directory.",
 )
 def datasource_new(directory):
-    """Generate datasources from catalog entries"""
+    """
+    Generates Great Expectation Datasources based on the kedro catalog.
+    Will create one Datasource each dataset in the catalog.
+    Only supports Spark and Pandas type datasets.
+    """
     from kedro.framework.context import load_context
 
     ge_context = toolkit.load_data_context_with_error_handling(directory)

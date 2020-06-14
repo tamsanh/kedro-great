@@ -11,16 +11,16 @@ from kedro.framework.context import KedroContext, load_context
 from ..data import generate_datasource_name
 
 
-@click.command(name="generate_suites")
+@click.command(name="suites")
 @click.option(
     "--directory",
     "-d",
     default=None,
     help="The project's great_expectations directory.",
 )
-@click.option("--empty", "empty", flag_value=True, help="Create an empty suite.")
+@click.option("--empty", "empty", flag_value=True, help="Creates empty suites.")
 @click.option(
-    "--replace", "replace", flag_value=True, help="Replace old versions of suites."
+    "--replace", "replace", flag_value=True, help="Replace any existing suites."
 )
 @click.option(
     "--batch-kwargs",
@@ -28,14 +28,10 @@ from ..data import generate_datasource_name
     help="Additional keyword arguments to be provided to get_batch when loading the data asset. Must be a valid JSON dictionary",
 )
 def suite_new(directory, empty, replace, batch_kwargs):
-    # TODO update docstring on next major release
     """
-    Create a new Expectation Suite.
+    Create Great Expectation Suites based on the kedro catalog using the BasicSuiteBuilderProfiler.
 
-    Great Expectations will choose a couple of columns and generate expectations about them
-    to demonstrate some examples of assertions you can make about your data.
-
-    If you wish to skip the examples, add the `--empty` flag.
+    If you wish to create suites without using the BasicSuiteBuilderProfiler, add the `--empty` flag.
     """
 
     kedro_context = load_context(Path.cwd())
