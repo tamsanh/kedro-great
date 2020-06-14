@@ -1,0 +1,176 @@
+{
+  "data_asset_type": "Dataset",
+  "expectation_suite_name": "spark_iris_data.basic",
+  "expectations": [
+    {
+      "expectation_type": "expect_table_row_count_to_be_between",
+      "kwargs": {
+        "max_value": 165,
+        "min_value": 135
+      },
+      "meta": {
+        "BasicSuiteBuilderProfiler": {
+          "confidence": "very low"
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_table_column_count_to_equal",
+      "kwargs": {
+        "value": 5
+      },
+      "meta": {
+        "BasicSuiteBuilderProfiler": {
+          "confidence": "very low"
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_table_columns_to_match_ordered_list",
+      "kwargs": {
+        "column_list": [
+          "sepal_length",
+          "sepal_width",
+          "petal_length",
+          "petal_width",
+          "species"
+        ]
+      },
+      "meta": {
+        "BasicSuiteBuilderProfiler": {
+          "confidence": "very low"
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "species"
+      },
+      "meta": {
+        "BasicSuiteBuilderProfiler": {
+          "confidence": "very low"
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_distinct_values_to_be_in_set",
+      "kwargs": {
+        "column": "species",
+        "value_set": [
+          "setosa",
+          "versicolor",
+          "virginica"
+        ]
+      },
+      "meta": {
+        "BasicSuiteBuilderProfiler": {
+          "confidence": "very low"
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_kl_divergence_to_be_less_than",
+      "kwargs": {
+        "column": "species",
+        "partition_object": {
+          "values": [
+            "setosa",
+            "versicolor",
+            "virginica"
+          ],
+          "weights": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        "threshold": 0.6
+      },
+      "meta": {
+        "BasicSuiteBuilderProfiler": {
+          "confidence": "very low"
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "sepal_length"
+      },
+      "meta": {
+        "BasicSuiteBuilderProfiler": {
+          "confidence": "very low"
+        }
+      }
+    },
+    {
+      "expectation_type": "expect_column_value_lengths_to_be_between",
+      "kwargs": {
+        "column": "sepal_length",
+        "min_value": 1
+      },
+      "meta": {
+        "BasicSuiteBuilderProfiler": {
+          "confidence": "very low"
+        }
+      }
+    }
+  ],
+  "meta": {
+    "BasicSuiteBuilderProfiler": {
+      "batch_kwargs": {
+        "data_asset_name": "iris",
+        "datasource": "spark_iris_data___kedro_great_datasource",
+        "path": "/Users/tamu/code/kedro-great/example-pipeline/data/01_raw/iris.csv",
+        "reader_options": {
+          "header": true
+        }
+      },
+      "created_at": 1592139845.478792,
+      "created_by": "BasicSuiteBuilderProfiler"
+    },
+    "citations": [
+      {
+        "batch_kwargs": {
+          "data_asset_name": "iris",
+          "datasource": "spark_iris_data___kedro_great_datasource",
+          "path": "/Users/tamu/code/kedro-great/example-pipeline/data/01_raw/iris.csv",
+          "reader_options": {
+            "header": true
+          }
+        },
+        "batch_markers": {
+          "ge_load_time": "20200614T130354.372736Z"
+        },
+        "batch_parameters": null,
+        "citation_date": "20200614T130405.705432Z",
+        "comment": "BasicSuiteBuilderProfiler added a citation based on the current batch."
+      }
+    ],
+    "columns": {
+      "petal_length": {
+        "description": ""
+      },
+      "petal_width": {
+        "description": ""
+      },
+      "sepal_length": {
+        "description": ""
+      },
+      "sepal_width": {
+        "description": ""
+      },
+      "species": {
+        "description": ""
+      }
+    },
+    "great_expectations.__version__": "0.11.4",
+    "notes": {
+      "content": [
+        "#### This is an _example_ suite\n\n- This suite was made by quickly glancing at 1000 rows of your data.\n- This is **not a production suite**. It is meant to show examples of expectations.\n- Because this suite was auto-generated using a very basic profiler that does not know your data like you do, many of the expectations may not be meaningful.\n"
+      ],
+      "format": "markdown"
+    }
+  }
+}
