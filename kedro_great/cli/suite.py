@@ -8,7 +8,7 @@ from great_expectations.cli import toolkit
 from great_expectations.cli.toolkit import create_empty_suite
 from kedro.framework.context import KedroContext, load_context
 
-from data import generate_datasource_name
+from ..data import generate_datasource_name
 
 
 @click.group()

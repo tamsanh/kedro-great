@@ -14,7 +14,7 @@ from kedro.context import load_context
 from kedro.framework.context import KedroContext
 from kedro.io import AbstractDataSet
 
-from data import identify_dataset_type, generate_datasource_name
+from ..data import identify_dataset_type, generate_datasource_name
 
 
 @click.group(name="datasource")

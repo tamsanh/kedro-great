@@ -11,7 +11,7 @@ from great_expectations.validator.validator import Validator
 
 import logging
 
-from data import (
+from ..data import (
     identify_dataset_type,
     get_suite_name,
     get_ge_class,
