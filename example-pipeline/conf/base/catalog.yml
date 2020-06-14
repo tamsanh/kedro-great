@@ -43,8 +43,14 @@
 # This is a data set used by the "Hello World" example pipeline provided with the project
 # template. Please feel free to remove it once you remove the example pipeline.
 
-example_iris_data:
+pandas_iris_data:
   type: pandas.CSVDataSet
   filepath: data/01_raw/iris.csv
+
+
+spark_iris_data:
+  type: spark.SparkDataSet
+  filepath: data/01_raw/iris.csv
+  file_format: csv
 
 

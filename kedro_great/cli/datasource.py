@@ -18,8 +18,8 @@ from kedro.io import AbstractDataSet
 from data import identify_dataset_type, generate_datasource_name
 
 
-@click.group()
-def datasource():
+@click.group(name="datasource")
+def datasource_commands():
     """Datasource operations"""
     pass
 
@@ -89,10 +89,14 @@ def generate_datasources(
 ) -> List[str]:
     catalog = kedro_context.catalog
     new_datasources = []
+    existing_datasource_names = {ds["name"] for ds in ge_context.list_datasources()}
     for dataset_name in catalog.list():
+        datasource_name = generate_datasource_name(dataset_name)
+        if datasource_name in existing_datasource_names:
+            continue
+
         dataset = catalog._get_dataset(dataset_name)
         datasource_type = identify_dataset_type(dataset)
-        datasource_name = generate_datasource_name(dataset_name)
 
         if datasource_type == DatasourceTypes.PANDAS:
             name = _add_pandas_datasource(datasource_name, dataset, ge_context)
@@ -103,7 +107,7 @@ def generate_datasources(
     return new_datasources
 
 
-@datasource.command(name="generate")
+@datasource_commands.command(name="generate")
 @click.option(
     "--directory",
     "-d",

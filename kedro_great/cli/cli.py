@@ -13,11 +13,11 @@ def great():
 
 from .init import init
 from .suite import suite
-from .datasource import datasource
+from .datasource import datasource_commands
 
 great.add_command(init)
 great.add_command(suite)
-great.add_command(datasource)
+great.add_command(datasource_commands)
 
 
 def main():

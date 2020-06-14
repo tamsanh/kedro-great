@@ -22,6 +22,7 @@ from great_expectations.exceptions import (
 from kedro.framework.context import load_context
 
 from cli.datasource import generate_datasources
+from cli.suite import generate_basic_suites
 
 
 @click.command()
@@ -47,23 +48,28 @@ def init(target_directory, usage_stats):
             # TODO ensure this is covered by a test
             exit(0)
         try:
-            DataContext.create(
-                target_directory, usage_statistics_enabled=usage_stats
-            )
+            DataContext.create(target_directory, usage_statistics_enabled=usage_stats)
             cli_message(SETUP_SUCCESS)
         except DataContextError as e:
             cli_message("<red>{}</red>".format(e.message))
             exit(5)
 
-    if not click.confirm("Generate Datasources based on Kedro Context?", default=True):
-        exit(0)
-    kedro_context = load_context(Path.cwd())
-    ge_context = toolkit.load_data_context_with_error_handling(ge_dir)
-    new_datasources = generate_datasources(kedro_context, ge_context)
-    if new_datasources:
-        cli_message(
-            "Added {} New datasources to your project.".format(len(new_datasources))
-        )
+    if click.confirm("Generate Datasources based on Kedro Context?", default=True):
+        kedro_context = load_context(Path.cwd())
+        ge_context = toolkit.load_data_context_with_error_handling(ge_dir)
+        new_datasources = generate_datasources(kedro_context, ge_context)
+        if new_datasources:
+            cli_message(
+                "Added {} New datasources to your project.".format(len(new_datasources))
+            )
 
-    if not click.confirm("Generate Basic Validation Suites based on Kedro Context?", default=True):
-        pass
+    if click.confirm(
+        "Generate Basic Validation Suites based on Kedro Context?", default=True
+    ):
+        kedro_context = load_context(Path.cwd())
+        ge_context = toolkit.load_data_context_with_error_handling(ge_dir)
+        new_datasources = generate_basic_suites(kedro_context, ge_context)
+        if new_datasources:
+            cli_message(
+                "Added {} New datasources to your project.".format(len(new_datasources))
+            )

@@ -94,6 +94,7 @@ class KedroGreat:
         target_suite = self.expectation_context.get_expectation_suite(
             target_expectation_suite_name
         )
+        dataset_path = str(dataset._filepath)
         df = dataset.load()
         batch_markers = (
             BatchMarkers(
@@ -107,7 +108,10 @@ class KedroGreat:
         batch = Batch(
             "kedro",
             batch_kwargs=BatchKwargs(
-                {"path": "kedro", "datasource": generate_datasource_name(dataset_name)}
+                {
+                    "path": dataset_path,
+                    "datasource": generate_datasource_name(dataset_name),
+                }
             ),
             data=df,
             batch_parameters=None,
