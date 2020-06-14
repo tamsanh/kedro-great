@@ -14,7 +14,30 @@ Never have fear of data silently changing ever again.
 
 ## Quick Start
 
-### Installation
+#### Install
+```console
+pip install kedro-great
+kedro great init
+```
+
+```python
+# run.py
+from kedro_great import KedroGreat
+
+class ProjectContext(KedroContext):
+    hooks = (
+        KedroGreat(),
+    )
+```
+
+#### Use
+
+```console
+kedro run
+great_expectations docs build
+```
+
+## Installation
 
 Kedro Great is available on pypi, and is installed with [kedro hooks](https://kedro.readthedocs.io/en/latest/04_user_guide/15_hooks.html).
 
