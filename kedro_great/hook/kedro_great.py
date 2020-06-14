@@ -44,6 +44,7 @@ class KedroGreat:
         self._before_node_run = run_before_node
         self._after_node_run = run_after_node
         self.logger = logging.getLogger("KedroGreat")
+        self._finished_suites = set()
 
     @hook_impl
     def before_node_run(
@@ -67,7 +68,10 @@ class KedroGreat:
                 target_suite_name = get_suite_name(
                     self.expectations_map, dataset_name, suite_type
                 )
-                if target_suite_name not in self.expectation_suite_names:
+                if (
+                    target_suite_name not in self.expectation_suite_names
+                    or target_suite_name in self._finished_suites
+                ):
                     continue
 
                 dataset = catalog._get_dataset(dataset_name)
@@ -80,6 +84,7 @@ class KedroGreat:
                     continue
 
                 self._run_suite(dataset_name, dataset, target_suite_name, run_id)
+                self._finished_suites.add(target_suite_name)
                 ran_suite_for_dataset = True
 
             if not ran_suite_for_dataset:
