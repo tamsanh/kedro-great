@@ -12,7 +12,6 @@ from great_expectations.cli.cli_messages import (
 from great_expectations.cli.init import _get_full_path_to_ge_dir
 from great_expectations.cli.util import cli_message
 from great_expectations.exceptions import DataContextError
-from kedro.framework.context import load_context
 
 from .datasource import generate_datasources
 from .suite import generate_basic_suites
@@ -32,6 +31,8 @@ from .suite import generate_basic_suites
 )
 def init(target_directory, usage_stats):
     """Generate a new Great Expectations project configuration"""
+    from kedro.framework.context import load_context
+
     target_directory = os.path.abspath(target_directory)
     ge_dir = _get_full_path_to_ge_dir(target_directory)
 

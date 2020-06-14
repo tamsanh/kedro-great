@@ -10,7 +10,6 @@ from great_expectations.cli.datasource import DatasourceTypes
 from great_expectations.cli.util import cli_message
 from great_expectations.data_context.types.base import DatasourceConfigSchema
 from great_expectations import exceptions as ge_exceptions
-from kedro.context import load_context
 from kedro.framework.context import KedroContext
 from kedro.io import AbstractDataSet
 
@@ -115,6 +114,8 @@ def generate_datasources(
 )
 def datasource_new(directory):
     """Generate datasources from catalog entries"""
+    from kedro.framework.context import load_context
+
     ge_context = toolkit.load_data_context_with_error_handling(directory)
     kedro_context = load_context(Path.cwd())
     new_datasources = generate_datasources(kedro_context, ge_context)

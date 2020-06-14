@@ -3,32 +3,29 @@ from typing import Dict, Optional, List, Type
 from great_expectations.cli.datasource import DatasourceTypes
 from kedro.io import AbstractDataSet
 
-from kedro.extras.datasets.spark import SparkDataSet
-from kedro.extras.datasets.pandas import CSVDataSet, ExcelDataSet
-
-
-DEFAULT_PANDAS_DATASETS = [
-    CSVDataSet,
-    ExcelDataSet,
-]
-
-
-DEFAULT_SPARK_DATASETS = [SparkDataSet]
-
 
 def identify_dataset_type(
     dataset: AbstractDataSet,
     pandas_datasets: Optional[List[Type[AbstractDataSet]]] = None,
     spark_datasets: Optional[List[Type[AbstractDataSet]]] = None,
 ) -> Optional[DatasourceTypes]:
+    from kedro.extras.datasets.spark import SparkDataSet
+    from kedro.extras.datasets.pandas import CSVDataSet, ExcelDataSet
+
+    default_pandas_datasets = [
+        CSVDataSet,
+        ExcelDataSet,
+    ]
+
+    default_spark_datasets = [SparkDataSet]
 
     if pandas_datasets is None:
         pandas_datasets = []
     if spark_datasets is None:
         spark_datasets = []
 
-    pandas_datasets += DEFAULT_PANDAS_DATASETS
-    spark_datasets += DEFAULT_SPARK_DATASETS
+    pandas_datasets += default_pandas_datasets
+    spark_datasets += default_spark_datasets
 
     def _dataset_isinstance_of_list(
         target_dataset: AbstractDataSet, dataset_list: List[Type[AbstractDataSet]]
