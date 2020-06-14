@@ -10,7 +10,7 @@ As Seen on DataEngineerOne
 Kedro Great is an easy-to-use plugin for kedro that makes integration with Great Expectations fast and simple.
 
 Hold yourself accountable to [Great Expectations](https://github.com/great-expectations/great_expectations).  
-Never feel afraid of your data changing ever again.  
+Never have fear of data silently changing ever again.
 
 ## Quick Start
 
