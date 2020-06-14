@@ -54,5 +54,8 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
 
 
     return {
-        "__default__": Pipeline([node(lambda x: x.describe(), inputs='example_iris_data', outputs=None)])
+        "__default__": Pipeline([
+            node(lambda x: x.describe(), inputs='pandas_iris_data', outputs=None),
+            node(lambda x: x.show(), inputs='spark_iris_data', outputs=None),
+        ])
     }
