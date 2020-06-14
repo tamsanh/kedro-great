@@ -11,7 +11,7 @@ import great_expectations.exceptions as ge_exceptions
 
 @click.group()
 def suite():
-    """Expectation Suite operations"""
+    """Kedro Great Suite Operations"""
     pass
 
 

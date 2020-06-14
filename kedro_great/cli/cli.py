@@ -1,37 +1,27 @@
-import os
-import sys
-from pathlib import Path
-
 import click
-from great_expectations import DataContext
-from great_expectations.cli.cli_messages import (
-    GREETING,
-    PROJECT_IS_COMPLETE,
-    ONBOARDING_COMPLETE,
-    LETS_BEGIN_PROMPT,
-    RUN_INIT_AGAIN,
-    BUILD_DOCS_PROMPT,
-    SETUP_SUCCESS,
-)
-from great_expectations.cli.util import cli_message
-from great_expectations.exceptions import (
-    DataContextError,
-    DatasourceInitializationError,
-)
+
+
+@click.group(name="Kedro-Great")
+def commands():
+    """Kedro Great Command collections"""
+
+
+@commands.group()
+def great():
+    """Run Kedro Great Commands"""
+
 
 from .init import init
+from .suite import suite
+from .datasource import datasource
 
-
-@click.group(name="great")
-def cli():
-    raise NotImplementedError
-
-
-cli.add_command(init)
+great.add_command(init)
+great.add_command(suite)
+great.add_command(datasource)
 
 
 def main():
-    cli()
+    commands()
 
 
 if __name__ == "__main__":

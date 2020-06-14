@@ -2,7 +2,7 @@ import datetime
 from typing import Any, Dict, List, Optional
 
 from kedro.framework.hooks import hook_impl
-from kedro.io import DataCatalog
+from kedro.io import DataCatalog, AbstractDataSet
 import great_expectations as ge
 from great_expectations.core.batch import Batch
 from great_expectations.datasource.types import BatchMarkers
@@ -10,6 +10,13 @@ from great_expectations.core.id_dict import BatchKwargs
 from great_expectations.validator.validator import Validator
 
 import logging
+
+from data import (
+    identify_dataset_type,
+    get_suite_name,
+    get_ge_class,
+    generate_datasource_name,
+)
 
 
 class KedroGreat:
@@ -49,35 +56,27 @@ class KedroGreat:
         if self._after_node_run:
             self._run_validation(catalog, outputs, run_id)
 
-    def _get_suite_name(self, dataset_name: str, suite_type: Optional[str]) -> str:
-        if suite_type is None:
-            target_expectation_suite_name = (
-                f"{self.expectations_map.get(dataset_name, dataset_name)}"
-            )
-        else:
-            target_expectation_suite_name = (
-                f"{self.expectations_map.get(dataset_name, dataset_name)}.{suite_type}"
-            )
-        return target_expectation_suite_name
-
     def _run_validation(self, catalog: DataCatalog, data: Dict[str, Any], run_id: str):
         for dataset_name, dataset_value in data.items():
             ran_suite_for_dataset = False
             for suite_type in self.suite_types:
 
-                target_suite_name = self._get_suite_name(dataset_name, suite_type)
+                target_suite_name = get_suite_name(
+                    self.expectations_map, dataset_name, suite_type
+                )
                 if target_suite_name not in self.expectation_suite_names:
                     continue
 
                 dataset = catalog._get_dataset(dataset_name)
-                dataset_class = self._get_ge_class_name(dataset)
+                dataset_type = identify_dataset_type(dataset)
+                dataset_class = get_ge_class(dataset_type)
                 if dataset_class is None:
                     self.logger.warning(
                         f"Unsupported DataSet Type: {dataset_name}({type(dataset)})"
                     )
                     continue
 
-                self._run_suite(dataset, target_suite_name, run_id)
+                self._run_suite(dataset_name, dataset, target_suite_name, run_id)
                 ran_suite_for_dataset = True
 
             if not ran_suite_for_dataset:
@@ -85,19 +84,13 @@ class KedroGreat:
                     f"Missing Expectation Suite for DataSet: {dataset_name}"
                 )
 
-    @staticmethod
-    def _get_ge_class_name(dataset):
-        from kedro.extras.datasets.spark import SparkDataSet
-        from kedro.extras.datasets.pandas import CSVDataSet
-
-        if isinstance(dataset, CSVDataSet):
-            return "PandasDataset"
-        elif isinstance(dataset, SparkDataSet):
-            return "SparkDFDataset"
-        else:
-            return None
-
-    def _run_suite(self, dataset, target_expectation_suite_name, run_id):
+    def _run_suite(
+        self,
+        dataset_name: str,
+        dataset: AbstractDataSet,
+        target_expectation_suite_name: str,
+        run_id: str,
+    ):
         target_suite = self.expectation_context.get_expectation_suite(
             target_expectation_suite_name
         )
@@ -113,7 +106,9 @@ class KedroGreat:
         )
         batch = Batch(
             "kedro",
-            batch_kwargs=BatchKwargs({"path": "kedro", "datasource": "kedro"}),
+            batch_kwargs=BatchKwargs(
+                {"path": "kedro", "datasource": generate_datasource_name(dataset_name)}
+            ),
             data=df,
             batch_parameters=None,
             batch_markers=batch_markers,
@@ -124,7 +119,7 @@ class KedroGreat:
             expectation_suite=target_suite,
             expectation_engine={
                 "module_name": "great_expectations.dataset",
-                "class_name": self._get_ge_class_name(dataset),
+                "class_name": identify_dataset_type(dataset),
             },
         )
         validator_dataset_batch = v.get_dataset()

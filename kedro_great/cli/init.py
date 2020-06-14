@@ -19,6 +19,7 @@ from great_expectations.exceptions import (
 )
 
 
+@click.command()
 @click.option(
     "--target-directory",
     "-d",
@@ -26,17 +27,12 @@ from great_expectations.exceptions import (
     help="The root of the project directory where you want to initialize Great Expectations.",
 )
 @click.option(
-    # Note this --no-view option is mostly here for tests
-    "--view/--no-view",
-    help="By default open in browser unless you specify the --no-view flag.",
-    default=True,
-)
-@click.option(
     "--usage-stats/--no-usage-stats",
     help="By default, usage statistics are enabled unless you specify the --no-usage-stats flag.",
     default=True,
 )
-def init(target_directory, view, usage_stats):
+def init(target_directory, usage_stats):
+    """Generate a new Great Expectations project configuration"""
     target_directory = os.path.abspath(target_directory)
     ge_dir = _get_full_path_to_ge_dir(target_directory)
     cli_message(GREETING)
@@ -51,17 +47,20 @@ def init(target_directory, view, usage_stats):
             sys.exit(1)
 
         try:
-            context = DataContext.create(
+            DataContext.create(
                 target_directory, usage_statistics_enabled=usage_stats
             )
             cli_message(ONBOARDING_COMPLETE)
             # TODO if this is correct, ensure this is covered by a test
             cli_message(SETUP_SUCCESS)
+            from great_expectations.cli.datasource import datasource_new
+            datasource_new(target_directory)
             exit(0)
         except DataContextError as e:
             cli_message("<red>{}</red>".format(e.message))
             # TODO ensure this is covered by a test
             exit(5)
+
     else:
         if not click.confirm(LETS_BEGIN_PROMPT, default=True):
             cli_message(RUN_INIT_AGAIN)
