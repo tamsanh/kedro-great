@@ -12,12 +12,12 @@ def great():
 
 
 from .init import init
-from .suite import suite
-from .datasource import datasource_commands
+from .suite import suite_new
+from .datasource import datasource_new
 
 great.add_command(init)
-great.add_command(suite)
-great.add_command(datasource_commands)
+great.add_command(suite_new)
+great.add_command(datasource_new)
 
 
 def main():

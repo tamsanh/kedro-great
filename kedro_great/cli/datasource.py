@@ -16,12 +16,6 @@ from kedro.io import AbstractDataSet
 from ..data import identify_dataset_type, generate_datasource_name
 
 
-@click.group(name="datasource")
-def datasource_commands():
-    """Datasource operations"""
-    pass
-
-
 def _add_pandas_datasource(
     datasource_name: str, dataset: AbstractDataSet, ge_context: DataContext
 ) -> str:
@@ -105,7 +99,7 @@ def generate_datasources(
     return new_datasources
 
 
-@datasource_commands.command(name="generate")
+@click.command(name="generate_datasources")
 @click.option(
     "--directory",
     "-d",

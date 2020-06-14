@@ -11,13 +11,7 @@ from kedro.framework.context import KedroContext, load_context
 from ..data import generate_datasource_name
 
 
-@click.group()
-def suite():
-    """Kedro Great Suite Operations"""
-    pass
-
-
-@suite.command(name="generate")
+@click.command(name="generate_suites")
 @click.option(
     "--directory",
     "-d",
