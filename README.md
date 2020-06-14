@@ -3,7 +3,7 @@
 As Seen on DataEngineerOne
 
 <p align="center">
-  <img width="255" src="https://github.com/tamsanh/kedro-wings/blob/master/images/great.png">
+  <img width="255" src="https://github.com/tamsanh/kedro-great/blob/master/images/great.png">
 </p>
 
 
