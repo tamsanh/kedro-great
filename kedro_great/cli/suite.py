@@ -84,6 +84,7 @@ def generate_basic_suites(
             "datasource": datasource_name,
             "data_asset_name": dataasset_name,
             "path": data_path,
+            "reader_options": dataset._load_args,
         }
 
         batch_kwargs_generator_name = "path"
