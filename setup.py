@@ -9,10 +9,10 @@ setup(
     url="https://github.com/tamsanh/kedro-great.git",
     author="Tam-Sanh Nguyen",
     author_email="tamsanh@gmail.com",
-    description="Kedro Great automatically runs expectations from Great Expectations on your data",
+    description="Kedro Great makes integrating Great Expectations with Kedro easy!",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    packages=find_packages(),
+    packages=["kedro_great"],
     zip_safe=False,
     include_package_data=True,
     license="MIT",
@@ -28,4 +28,7 @@ setup(
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
     ],
+    entry_points={
+        "kedro.global_commands": ["kedro-great = kedro_great.cli:commands"]
+    }
 )
