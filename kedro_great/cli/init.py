@@ -1,28 +1,21 @@
 import os
-import sys
 from pathlib import Path
 
 import click
 from great_expectations import DataContext
 from great_expectations.cli import toolkit
 from great_expectations.cli.cli_messages import (
-    GREETING,
-    PROJECT_IS_COMPLETE,
-    ONBOARDING_COMPLETE,
     LETS_BEGIN_PROMPT,
     RUN_INIT_AGAIN,
     SETUP_SUCCESS,
 )
 from great_expectations.cli.init import _get_full_path_to_ge_dir
 from great_expectations.cli.util import cli_message
-from great_expectations.exceptions import (
-    DataContextError,
-    DatasourceInitializationError,
-)
+from great_expectations.exceptions import DataContextError
 from kedro.framework.context import load_context
 
-from cli.datasource import generate_datasources
-from cli.suite import generate_basic_suites
+from .datasource import generate_datasources
+from .suite import generate_basic_suites
 
 
 @click.command()

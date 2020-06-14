@@ -29,6 +29,6 @@ setup(
         "Programming Language :: Python :: 3.7",
     ],
     entry_points={
-        "kedro.global_commands": ["kedro-great = kedro_great.cli:commands"]
+        "kedro.global_commands": ["kedro-great = kedro_great:commands"]
     }
 )

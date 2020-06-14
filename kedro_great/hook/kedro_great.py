@@ -1,15 +1,14 @@
 import datetime
-from typing import Any, Dict, List, Optional
+import logging
+from typing import Any, Dict, List
 
-from kedro.framework.hooks import hook_impl
-from kedro.io import DataCatalog, AbstractDataSet
 import great_expectations as ge
 from great_expectations.core.batch import Batch
-from great_expectations.datasource.types import BatchMarkers
 from great_expectations.core.id_dict import BatchKwargs
+from great_expectations.datasource.types import BatchMarkers
 from great_expectations.validator.validator import Validator
-
-import logging
+from kedro.framework.hooks import hook_impl
+from kedro.io import DataCatalog, AbstractDataSet
 
 from ..data import (
     identify_dataset_type,
