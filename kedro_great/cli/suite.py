@@ -69,7 +69,7 @@ def generate_basic_suites(
     existing_datasource_names = {ds["name"] for ds in ge_context.list_datasources()}
     for dataset_name in catalog.list():
         suite_name = generate_basic_suite_name(dataset_name)
-        if suite_name in ge_context.list_expectation_suite_names():
+        if suite_name in ge_context.list_expectation_suite_names() and not replace:
             continue
 
         datasource_name = generate_datasource_name(dataset_name)
