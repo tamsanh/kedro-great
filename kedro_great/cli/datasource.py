@@ -108,7 +108,7 @@ def generate_datasources(
 )
 def datasource_new(directory):
     """
-    Generates Great Expectation Datasources based on the kedro catalog.
+    Create Great Expectation Datasources based on the kedro catalog.
     Will create one Datasource each dataset in the catalog.
     Only supports Spark and Pandas type datasets.
     """

@@ -31,7 +31,7 @@ from .suite import generate_basic_suites
 )
 def init(target_directory, usage_stats):
     """
-    Generate a new Great Expectations project configuration and
+    Create a new Great Expectations project configuration and
     fill in the Datasources and Suites based on the kedro catalog
     """
     from kedro.framework.context import load_context
