@@ -10,7 +10,7 @@ from great_expectations.validator.validator import Validator
 from kedro.framework.hooks import hook_impl
 from kedro.io import DataCatalog, AbstractDataSet
 
-from ..data import (
+from .data import (
     identify_dataset_type,
     get_suite_name,
     get_ge_class,
