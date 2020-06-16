@@ -8,6 +8,7 @@ from great_expectations.core.batch import Batch
 from great_expectations.core.id_dict import BatchKwargs
 from great_expectations.datasource.types import BatchMarkers
 from great_expectations.validator.validator import Validator
+from great_expectations.exceptions import ConfigNotFoundError
 from kedro.framework.hooks import hook_impl
 from kedro.io import DataCatalog
 
@@ -35,14 +36,23 @@ class KedroGreat:
         self.expectations_map = expectations_map
         self.suite_types = suite_types
 
-        self.expectation_context = ge.data_context.DataContext()
-        self.expectation_suite_names = set(
-            self.expectation_context.list_expectation_suite_names()
-        )
         self._before_node_run = run_before_node
         self._after_node_run = run_after_node
         self.logger = logging.getLogger("KedroGreat")
         self._finished_suites = set()
+
+        try:
+            self.expectation_context = ge.data_context.DataContext()
+            self.expectation_suite_names = set(
+                self.expectation_context.list_expectation_suite_names()
+            )
+        except ConfigNotFoundError:
+            self.logger.error(
+                "Great Expectations has not been initialized. "
+                "KedroGreat cannot operate. "
+                "Please run 'kedro great init'."
+            )
+            self.expectation_context = None
 
     @hook_impl
     def before_node_run(
@@ -59,6 +69,9 @@ class KedroGreat:
             self._run_validation(catalog, outputs, run_id)
 
     def _run_validation(self, catalog: DataCatalog, data: Dict[str, Any], run_id: str):
+        if self.expectation_context is None:
+            return
+
         for dataset_name, dataset_value in data.items():
             ran_suite_for_dataset = False
 
