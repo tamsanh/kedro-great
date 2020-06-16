@@ -4,18 +4,16 @@ from copy import copy
 from typing import Any, Dict, List, Optional
 
 import great_expectations as ge
-from great_expectations.cli.datasource import DatasourceTypes
 from great_expectations.core.batch import Batch
 from great_expectations.core.id_dict import BatchKwargs
 from great_expectations.datasource.types import BatchMarkers
 from great_expectations.validator.validator import Validator
 from kedro.framework.hooks import hook_impl
-from kedro.io import DataCatalog, AbstractDataSet
+from kedro.io import DataCatalog
 
+from .exceptions import UnsupportedDataSet
 from .data import (
-    identify_dataset_type,
     get_suite_names,
-    get_ge_class,
     generate_datasource_name,
 )
 
@@ -69,37 +67,37 @@ class KedroGreat:
             )
 
             dataset = catalog._get_dataset(dataset_name)
-            dataset_type = identify_dataset_type(dataset)
             dataset_path = str(dataset._filepath)
-            dataset_class = get_ge_class(dataset_type)
             df = dataset.load()
-            if dataset_class is None:
+
+            try:
+                for target_suite_name in target_suite_names:
+                    if (
+                        target_suite_name not in self.expectation_suite_names
+                        or target_suite_name in self._finished_suites
+                    ):
+                        continue
+
+                    self._run_suite(
+                        dataset_name, dataset_path, df, target_suite_name, run_id
+                    )
+
+                    self._finished_suites.add(target_suite_name)
+                    ran_suite_for_dataset = True
+
+                if not ran_suite_for_dataset:
+                    self.logger.warning(
+                        f"Missing Expectation Suite for DataSet: {dataset_name}"
+                    )
+            except UnsupportedDataSet:
                 self.logger.warning(
                     f"Unsupported DataSet Type: {dataset_name}({type(dataset)})"
-                )
-                continue
-
-            for target_suite_name in target_suite_names:
-                if (
-                    target_suite_name not in self.expectation_suite_names
-                    or target_suite_name in self._finished_suites
-                ):
-                    continue
-
-                self._run_suite(dataset_name, dataset_path, dataset_class, df, target_suite_name, run_id)
-                self._finished_suites.add(target_suite_name)
-                ran_suite_for_dataset = True
-
-            if not ran_suite_for_dataset:
-                self.logger.warning(
-                    f"Missing Expectation Suite for DataSet: {dataset_name}"
                 )
 
     def _run_suite(
         self,
         dataset_name: str,
         dataset_path: str,
-        class_name: str,
         df: Any,
         target_expectation_suite_name: str,
         run_id: str,
@@ -107,14 +105,12 @@ class KedroGreat:
         target_suite = self.expectation_context.get_expectation_suite(
             target_expectation_suite_name
         )
-        batch_markers = (
-            BatchMarkers(
-                {
-                    "ge_load_time": datetime.datetime.now(
-                        datetime.timezone.utc
-                    ).strftime("%Y%m%dT%H%M%S.%fZ")
-                }
-            ),
+        batch_markers = BatchMarkers(
+            {
+                "ge_load_time": datetime.datetime.now(datetime.timezone.utc).strftime(
+                    "%Y%m%dT%H%M%S.%fZ"
+                )
+            }
         )
         batch = Batch(
             "kedro",
@@ -129,14 +125,12 @@ class KedroGreat:
             batch_markers=batch_markers,
             data_context=self.expectation_context,
         )
-        v = Validator(
-            batch=batch,
-            expectation_suite=target_suite,
-            expectation_engine={
-                "module_name": "great_expectations.dataset",
-                "class_name": class_name,
-            },
-        )
+
+        try:
+            v = Validator(batch=batch, expectation_suite=target_suite,)
+        except ValueError:
+            raise UnsupportedDataSet
+
         validator_dataset_batch = v.get_dataset()
         return self.expectation_context.run_validation_operator(
             "action_list_operator", [validator_dataset_batch], run_id=run_id

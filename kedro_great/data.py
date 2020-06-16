@@ -46,15 +46,10 @@ def generate_datasource_name(dataset_name: str) -> str:
     return f"{dataset_name}___kedro_great_datasource"
 
 
-def get_ge_class(datasource_type: DatasourceTypes) -> Optional[str]:
-    return {
-        DatasourceTypes.PANDAS: "PandasDataset",
-        DatasourceTypes.SPARK: "SparkDFDataset",
-    }.get(datasource_type)
-
-
 def get_suite_names(
-    expectations_map: Dict[str, Union[str, List[str]]], dataset_name: str, suite_types: List[str]
+    expectations_map: Dict[str, Union[str, List[str]]],
+    dataset_name: str,
+    suite_types: List[str],
 ) -> List[str]:
     found_mappings = expectations_map.get(dataset_name, dataset_name)
     if type(found_mappings) is str:
@@ -64,14 +59,10 @@ def get_suite_names(
 
     for found_mapping in found_mappings:
         for suite_type in suite_types:
-            if '.' in found_mapping or suite_type is None:
-                target_expectation_suite_name = (
-                    f"{found_mapping}"
-                )
+            if "." in found_mapping or suite_type is None:
+                target_expectation_suite_name = f"{found_mapping}"
             else:
-                target_expectation_suite_name = (
-                    f"{found_mapping}.{suite_type}"
-                )
+                target_expectation_suite_name = f"{found_mapping}.{suite_type}"
             target_suite_names.append(target_expectation_suite_name)
 
     return list(set(target_suite_names))
