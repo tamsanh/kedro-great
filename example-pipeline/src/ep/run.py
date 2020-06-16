@@ -34,10 +34,17 @@ from ep.pipeline import create_pipelines
 from kedro.framework.context import KedroContext, load_package_context
 from kedro.pipeline import Pipeline
 
+from kedro_great import KedroGreat
+
+
 class ProjectContext(KedroContext):
     """Users can override the remaining methods from the parent class here,
     or create new ones (e.g. as required by plugins)
     """
+
+    hooks = (
+        KedroGreat(),
+    )
 
     project_name = "example-pipeline"
     # `project_version` is the version of kedro used to generate the project
