@@ -118,3 +118,17 @@ It will operate on the node `inputs` and `outputs` respectively.
 ```python
 KedroGreat(run_before_node=True, run_after_node=False)
 ```
+
+### fail_fast: bool, fail_after_pipeline_run: bool
+
+You can also have `KedroGreat` throw a `SuiteValidationFailure` when a Great Expectations validation fails.
+
+Either the exception can be throw immediately, or the exceptions can be aggregated over the whole pipeline run, and thrown at the end.
+
+This is useful for when you wish to run validation on your pipeline in a CI/CD way.
+
+**Default:** Neither are set
+
+```python
+KedroGreat(fail_fast=True, fail_after_pipeline_run=True)
+```
