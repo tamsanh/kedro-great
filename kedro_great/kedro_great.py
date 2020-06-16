@@ -1,5 +1,6 @@
 import datetime
 import logging
+import os
 from copy import copy
 from typing import Any, Dict, List, Optional, NamedTuple
 
@@ -152,12 +153,15 @@ class KedroGreat:
                 )
             }
         )
+        dataasset_name, _ = os.path.splitext(os.path.basename(dataset_path))
+
         batch = Batch(
             "kedro",
             batch_kwargs=BatchKwargs(
                 {
                     "path": dataset_path,
                     "datasource": generate_datasource_name(dataset_name),
+                    "data_asset_name": dataasset_name,
                 }
             ),
             data=df,
