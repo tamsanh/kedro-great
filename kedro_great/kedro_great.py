@@ -68,7 +68,9 @@ class KedroGreat:
     @hook_impl
     def after_pipeline_run(self, run_params, pipeline, catalog):
         if self._fail_after_pipeline_run and len(self._failed_suites) > 0:
-            raise SuiteValidationFailure(f'Failed {len(self._failed_suites)} suites: {self._failed_suites}')
+            raise SuiteValidationFailure(
+                f"Failed {len(self._failed_suites)} suites: {self._failed_suites}"
+            )
 
     @hook_impl
     def before_node_run(
@@ -112,9 +114,13 @@ class KedroGreat:
                     )
 
                     if self._fail_fast and not validation.success:
-                        raise SuiteValidationFailure(f'Suite {target_suite_name} for DataSet {dataset_name} failed!')
+                        raise SuiteValidationFailure(
+                            f"Suite {target_suite_name} for DataSet {dataset_name} failed!"
+                        )
                     elif not validation.success:
-                        self._failed_suites.append(FailedSuite(target_suite_name, dataset_name))
+                        self._failed_suites.append(
+                            FailedSuite(target_suite_name, dataset_name)
+                        )
 
                     self._finished_suites.add(target_suite_name)
                     ran_suite_for_dataset = True
