@@ -1,4 +1,4 @@
-from typing import Dict, Optional, List, Type
+from typing import Dict, Optional, List, Type, Union
 
 from great_expectations.cli.datasource import DatasourceTypes
 from kedro.io import AbstractDataSet
@@ -53,15 +53,25 @@ def get_ge_class(datasource_type: DatasourceTypes) -> Optional[str]:
     }.get(datasource_type)
 
 
-def get_suite_name(
-    expectations_map: Dict[str, str], dataset_name: str, suite_type: Optional[str]
-) -> str:
-    if suite_type is None:
-        target_expectation_suite_name = (
-            f"{expectations_map.get(dataset_name, dataset_name)}"
-        )
-    else:
-        target_expectation_suite_name = (
-            f"{expectations_map.get(dataset_name, dataset_name)}.{suite_type}"
-        )
-    return target_expectation_suite_name
+def get_suite_names(
+    expectations_map: Dict[str, Union[str, List[str]]], dataset_name: str, suite_types: List[str]
+) -> List[str]:
+    found_mappings = expectations_map.get(dataset_name, dataset_name)
+    if type(found_mappings) is str:
+        found_mappings = [found_mappings]
+
+    target_suite_names = []
+
+    for found_mapping in found_mappings:
+        for suite_type in suite_types:
+            if '.' in found_mapping or suite_type is None:
+                target_expectation_suite_name = (
+                    f"{found_mapping}"
+                )
+            else:
+                target_expectation_suite_name = (
+                    f"{found_mapping}.{suite_type}"
+                )
+            target_suite_names.append(target_expectation_suite_name)
+
+    return list(set(target_suite_names))
