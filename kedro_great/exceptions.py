@@ -4,3 +4,7 @@ class KedroGreatException(Exception):
 
 class UnsupportedDataSet(KedroGreatException):
     pass
+
+
+class SuiteValidationFailure(KedroGreatException):
+    pass

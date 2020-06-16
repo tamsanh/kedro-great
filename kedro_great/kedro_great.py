@@ -1,7 +1,7 @@
 import datetime
 import logging
 from copy import copy
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, NamedTuple
 
 import great_expectations as ge
 from great_expectations.core.batch import Batch
@@ -12,11 +12,16 @@ from great_expectations.exceptions import ConfigNotFoundError
 from kedro.framework.hooks import hook_impl
 from kedro.io import DataCatalog
 
-from .exceptions import UnsupportedDataSet
+from .exceptions import UnsupportedDataSet, SuiteValidationFailure
 from .data import (
     get_suite_names,
     generate_datasource_name,
 )
+
+
+class FailedSuite(NamedTuple):
+    suite: str
+    dataset: str
 
 
 class KedroGreat:
@@ -28,6 +33,8 @@ class KedroGreat:
         suite_types: List[Optional[str]] = None,
         run_before_node: bool = True,
         run_after_node: bool = False,
+        fail_fast: bool = False,
+        fail_after_pipeline_run: bool = False,
     ):
         if expectations_map is None:
             expectations_map = {}
@@ -38,8 +45,12 @@ class KedroGreat:
 
         self._before_node_run = run_before_node
         self._after_node_run = run_after_node
+        self._fail_fast = fail_fast
+        self._fail_after_pipeline_run = fail_after_pipeline_run
+
         self.logger = logging.getLogger("KedroGreat")
         self._finished_suites = set()
+        self._failed_suites = list()
 
         try:
             self.expectation_context = ge.data_context.DataContext()
@@ -53,6 +64,11 @@ class KedroGreat:
                 "Please run 'kedro great init'."
             )
             self.expectation_context = None
+
+    @hook_impl
+    def after_pipeline_run(self, run_params, pipeline, catalog):
+        if self._fail_after_pipeline_run and len(self._failed_suites) > 0:
+            raise SuiteValidationFailure(f'Failed {len(self._failed_suites)} suites: {self._failed_suites}')
 
     @hook_impl
     def before_node_run(
@@ -91,9 +107,14 @@ class KedroGreat:
                     ):
                         continue
 
-                    self._run_suite(
+                    validation = self._run_suite(
                         dataset_name, dataset_path, df, target_suite_name, run_id
                     )
+
+                    if self._fail_fast and not validation.success:
+                        raise SuiteValidationFailure(f'Suite {target_suite_name} for DataSet {dataset_name} failed!')
+                    elif not validation.success:
+                        self._failed_suites.append(FailedSuite(target_suite_name, dataset_name))
 
                     self._finished_suites.add(target_suite_name)
                     ran_suite_for_dataset = True
