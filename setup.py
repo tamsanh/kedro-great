@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="kedro-great",
-    version="0.1.9",
+    version="0.2.0",
     url="https://github.com/tamsanh/kedro-great.git",
     author="Tam-Sanh Nguyen",
     author_email="tamsanh@gmail.com",
