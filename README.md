@@ -1,6 +1,7 @@
 # Kedro Great
 
-As Seen on DataEngineerOne
+As Seen on [DataEngineerOne](https://www.youtube.com/c/DataEngineerOne)  
+*Watch the Video*: [Kedro Great: Use Great Expectations with Ease!](https://www.youtube.com/watch?v=VY_AO0__oIE)
 
 <p align="center">
   <img width="255" src="https://github.com/tamsanh/kedro-great/blob/master/images/great.png">
