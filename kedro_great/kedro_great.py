@@ -99,7 +99,7 @@ class KedroGreat:
             )
 
             dataset = catalog._get_dataset(dataset_name)
-            dataset_path = str(dataset._filepath)
+            dataset_path = getattr(dataset, "_filepath", None)
             df = dataset.load()
 
             try:
@@ -138,7 +138,7 @@ class KedroGreat:
     def _run_suite(
         self,
         dataset_name: str,
-        dataset_path: str,
+        dataset_path: Optional[str],
         df: Any,
         target_expectation_suite_name: str,
         run_id: str,
@@ -153,17 +153,17 @@ class KedroGreat:
                 )
             }
         )
-        dataasset_name, _ = os.path.splitext(os.path.basename(dataset_path))
+
+        batch_kwargs = {"datasource": generate_datasource_name(dataset_name)}
+
+        if dataset_path:
+            dataasset_name, _ = os.path.splitext(os.path.basename(dataset_path))
+            batch_kwargs["path"] = dataset_path
+            batch_kwargs["data_asset_name"] = dataasset_name
 
         batch = Batch(
             "kedro",
-            batch_kwargs=BatchKwargs(
-                {
-                    "path": dataset_path,
-                    "datasource": generate_datasource_name(dataset_name),
-                    "data_asset_name": dataasset_name,
-                }
-            ),
+            batch_kwargs=BatchKwargs(batch_kwargs),
             data=df,
             batch_parameters=None,
             batch_markers=batch_markers,
