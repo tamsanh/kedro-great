@@ -100,7 +100,7 @@ class KedroGreat:
 
             dataset = catalog._get_dataset(dataset_name)
             dataset_path = getattr(dataset, "_filepath", None)
-            df = dataset.load()
+            df = dataset.load() if dataset_path else dataset_value
 
             try:
                 for target_suite_name in target_suite_names:
