@@ -11,7 +11,7 @@ from great_expectations.datasource.types import BatchMarkers
 from great_expectations.validator.validator import Validator
 from great_expectations.exceptions import ConfigNotFoundError
 from kedro.framework.hooks import hook_impl
-from kedro.io import DataCatalog
+from kedro.io import DataCatalog, MemoryDataset
 
 from .exceptions import UnsupportedDataSet, SuiteValidationFailure
 from .data import (
@@ -99,8 +99,7 @@ class KedroGreat:
             )
 
             dataset = catalog._get_dataset(dataset_name)
-            dataset_path = getattr(dataset, "_filepath", None)
-            df = dataset.load()
+            df = dataset_value if isinstance(dataset, MemoryDataset) else dataset.load()
 
             try:
                 for target_suite_name in target_suite_names:
