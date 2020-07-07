@@ -99,6 +99,7 @@ class KedroGreat:
             )
 
             dataset = catalog._get_dataset(dataset_name)
+            dataset_path = getattr(dataset, "_filepath", None)
             df = dataset_value if isinstance(dataset, MemoryDataset) else dataset.load()
 
             try:
