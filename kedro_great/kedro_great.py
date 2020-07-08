@@ -158,7 +158,7 @@ class KedroGreat:
 
         if dataset_path:
             dataasset_name, _ = os.path.splitext(os.path.basename(dataset_path))
-            batch_kwargs["path"] = dataset_path
+            batch_kwargs["path"] = str(dataset_path)
             batch_kwargs["data_asset_name"] = dataasset_name
 
         batch = Batch(
