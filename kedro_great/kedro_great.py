@@ -78,16 +78,16 @@ class KedroGreat:
         self, catalog: DataCatalog, inputs: Dict[str, Any], run_id: str
     ) -> None:
         if self._before_node_run:
-            self._run_validation(catalog, inputs, run_id)
+            self._run_validation(catalog, inputs, run_id, read_from_catalog=True)
 
     @hook_impl
     def after_node_run(
         self, catalog: DataCatalog, outputs: Dict[str, Any], run_id: str
     ) -> None:
         if self._after_node_run:
-            self._run_validation(catalog, outputs, run_id)
+            self._run_validation(catalog, outputs, run_id, read_from_catalog=False)
 
-    def _run_validation(self, catalog: DataCatalog, data: Dict[str, Any], run_id: str):
+    def _run_validation(self, catalog: DataCatalog, data: Dict[str, Any], run_id: str, read_from_catalog: bool):
         if self.expectation_context is None:
             return
 
@@ -100,7 +100,10 @@ class KedroGreat:
 
             dataset = catalog._get_dataset(dataset_name)
             dataset_path = getattr(dataset, "_filepath", None)
-            df = dataset_value if isinstance(dataset, MemoryDataSet) else dataset.load()
+            if read_from_catalog:
+                df = dataset_value if isinstance(dataset, MemoryDataSet) else dataset.load()
+            else:
+                df = dataset_value
 
             try:
                 for target_suite_name in target_suite_names:
