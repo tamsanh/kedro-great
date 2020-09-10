@@ -73,7 +73,7 @@ class KedroGreat:
                 f"Failed {len(self._failed_suites)} suites: {self._failed_suites}"
             )
 
-     @hook_impl
+    @hook_impl
     def before_node_run(
         self, catalog: DataCatalog, inputs: Dict[str, Any], run_id: str
     ) -> None:
