@@ -7,7 +7,7 @@ from typing import Any, Dict, List, Optional, NamedTuple
 import great_expectations as ge
 from great_expectations.core.batch import Batch
 from great_expectations.core.id_dict import BatchKwargs
-from great_expectations.datasource.types import BatchMarkers
+from great_expectations.core.batch import BatchMarkers
 from great_expectations.validator.validator import Validator
 from great_expectations.exceptions import ConfigNotFoundError
 from kedro.framework.hooks import hook_impl
