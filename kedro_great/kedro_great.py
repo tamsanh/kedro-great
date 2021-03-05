@@ -7,7 +7,7 @@ from typing import Any, Dict, List, Optional, NamedTuple
 import great_expectations as ge
 from great_expectations.core.batch import Batch
 from great_expectations.core.id_dict import BatchKwargs
-from great_expectations.datasource.types import BatchMarkers
+from great_expectations.core.batch import BatchMarkers
 from great_expectations.validator.validator import Validator
 from great_expectations.exceptions import ConfigNotFoundError
 from kedro.framework.hooks import hook_impl
@@ -52,9 +52,9 @@ class KedroGreat:
         self.logger = logging.getLogger("KedroGreat")
         self._finished_suites = set()
         self._failed_suites = list()
-
+            
         try:
-            self.expectation_context = ge.data_context.DataContext()
+            self.expectation_context = ge.DataContext()
             self.expectation_suite_names = set(
                 self.expectation_context.list_expectation_suite_names()
             )
@@ -163,22 +163,23 @@ class KedroGreat:
             dataasset_name, _ = os.path.splitext(os.path.basename(dataset_path))
             batch_kwargs["path"] = str(dataset_path)
             batch_kwargs["data_asset_name"] = dataasset_name
-
         batch = Batch(
             "kedro",
             batch_kwargs=BatchKwargs(batch_kwargs),
-            data=df,
+            # data=df,
             batch_parameters=None,
             batch_markers=batch_markers,
             data_context=self.expectation_context,
         )
 
         try:
-            v = Validator(batch=batch, expectation_suite=target_suite,)
+            v = Validator(batch=batch, expectation_suite=target_suite, execution_engine=ge.execution_engine.execution_engine)
         except ValueError:
             raise UnsupportedDataSet
 
-        validator_dataset_batch = v.get_dataset()
+        # validator_dataset_batch = v.get_dataset()
         return self.expectation_context.run_validation_operator(
-            "action_list_operator", [validator_dataset_batch], run_id=run_id
+            "action_list_operator",
+            # [validator_dataset_batch],
+            run_id=run_id
         )
