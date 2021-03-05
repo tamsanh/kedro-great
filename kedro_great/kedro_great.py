@@ -180,6 +180,6 @@ class KedroGreat:
         # validator_dataset_batch = v.get_dataset()
         return self.expectation_context.run_validation_operator(
             "action_list_operator",
-            [validator_dataset_batch],
+            # [validator_dataset_batch],
             run_id=run_id
         )
